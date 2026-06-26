@@ -57,9 +57,18 @@ const message = messageParts.join(' - ');
 console.log(`Starting EAS build with message: ${message}`);
 
 const easArgs = ['eas-cli', 'build', '--platform', platform, '--profile', profile, '--message', message];
-const windowsCommand = `npx eas-cli build --platform ${platform} --profile ${profile} --message ${JSON.stringify(message)}`;
-const command = process.platform === 'win32' ? 'cmd.exe' : 'npx';
-const commandArgs = process.platform === 'win32' ? ['/d', '/s', '/c', windowsCommand] : easArgs;
+const escapePowerShell = (value) => `'${value.replace(/'/g, "''")}'`;
+const windowsCommand = [
+  '& npx eas-cli build',
+  '--platform',
+  escapePowerShell(platform),
+  '--profile',
+  escapePowerShell(profile),
+  '--message',
+  escapePowerShell(message),
+].join(' ');
+const command = process.platform === 'win32' ? 'powershell.exe' : 'npx';
+const commandArgs = process.platform === 'win32' ? ['-NoProfile', '-Command', windowsCommand] : easArgs;
 const result = spawnSync(command, commandArgs, {
   cwd: rootDir,
   stdio: 'inherit',
