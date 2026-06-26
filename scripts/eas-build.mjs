@@ -52,7 +52,7 @@ if (note) {
   messageParts.push(note);
 }
 
-const message = messageParts.join(' | ');
+const message = messageParts.join(' - ');
 
 console.log(`Starting EAS build with message: ${message}`);
 
