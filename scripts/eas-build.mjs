@@ -57,11 +57,12 @@ const message = messageParts.join(' | ');
 console.log(`Starting EAS build with message: ${message}`);
 
 const easArgs = ['eas', 'build', '--platform', platform, '--profile', profile, '--message', message];
-const command = process.platform === 'win32' ? 'npx.cmd' : 'npx';
-const result = spawnSync(command, easArgs, {
+const command = process.platform === 'win32' ? 'npx eas' : 'npx';
+const commandArgs = process.platform === 'win32' ? ['build', '--platform', platform, '--profile', profile, '--message', message] : easArgs;
+const result = spawnSync(command, commandArgs, {
   cwd: rootDir,
   stdio: 'inherit',
-  shell: false,
+  shell: process.platform === 'win32',
 });
 
 if (result.error) {
