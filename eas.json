@@ -4,10 +4,16 @@
     "appVersionSource": "local"
   },
   "build": {
-    "preview": {
+    "dev": {
       "distribution": "internal",
       "developmentClient": false,
       "autoIncrement": true
+    },
+    "preview": {
+      "extends": "dev"
+    },
+    "prod": {
+      "extends": "production"
     },
     "production": {
       "distribution": "store",

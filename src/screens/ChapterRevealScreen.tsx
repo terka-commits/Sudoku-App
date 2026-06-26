@@ -1,6 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useEffect } from 'react';
 import { Image, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { mysteryAssets } from '../assets/mysteryAssets';
 import { GoldButton, SecondaryButton } from '../components/MysteryButtons';
 import { MysteryScreen } from '../components/MysteryScreen';
@@ -15,6 +16,7 @@ export function ChapterRevealScreen({ route, navigation }: Props) {
   const baseChapter = getGameChapterById(route.params.chapterId);
   const { text } = useI18n();
   const chapter = getLocalizedGameChapter(baseChapter, text);
+  const insets = useSafeAreaInsets();
   const { height } = useWindowDimensions();
   const compact = height < 780;
   const tiny = height < 700;
@@ -48,7 +50,16 @@ export function ChapterRevealScreen({ route, navigation }: Props) {
   };
 
   return (
-    <MysteryScreen scroll={false} backgroundSource={mysteryAssets.mapBackgroundWood} contentStyle={[styles.screen, compact && styles.screenCompact, tiny && styles.screenTiny]}>
+    <MysteryScreen
+      scroll={false}
+      backgroundSource={mysteryAssets.mapBackgroundWood}
+      contentStyle={[
+        styles.screen,
+        compact && styles.screenCompact,
+        tiny && styles.screenTiny,
+        { paddingBottom: Math.max(insets.bottom, mysterySpacing.sm) + mysterySpacing.md },
+      ]}
+    >
       <View style={[styles.header, tiny && styles.headerTiny]}>
         <View style={styles.badge}>
           <Text style={styles.badgeText}>{chapter.title}</Text>
@@ -92,17 +103,14 @@ const styles = StyleSheet.create({
     gap: mysterySpacing.md,
     justifyContent: 'space-between',
     paddingHorizontal: mysterySpacing.lg,
-    paddingBottom: mysterySpacing.md,
     paddingTop: mysterySpacing.md,
   },
   screenCompact: {
     gap: mysterySpacing.sm,
-    paddingBottom: mysterySpacing.sm,
     paddingTop: mysterySpacing.sm,
   },
   screenTiny: {
     gap: 6,
-    paddingBottom: mysterySpacing.xs,
     paddingTop: mysterySpacing.xs,
   },
   header: {

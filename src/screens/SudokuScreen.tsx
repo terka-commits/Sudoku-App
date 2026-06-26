@@ -2,6 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useEffect, useState } from 'react';
 import { Platform, Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { mysteryAssets } from '../assets/mysteryAssets';
 import { AdBanner } from '../components/AdBanner';
 import { ToolButton } from '../components/MysteryButtons';
@@ -30,6 +31,7 @@ export function SudokuScreen({ route, navigation }: Props) {
   const difficulty = route.params.difficulty ?? DEFAULT_DIFFICULTY;
   const { completeChapter, progress } = useGameProgress();
   const { text } = useI18n();
+  const insets = useSafeAreaInsets();
   const chapter = getLocalizedRoom(baseChapter, text);
   const { width, height } = useWindowDimensions();
   const tablet = width >= 760;
@@ -159,7 +161,12 @@ export function SudokuScreen({ route, navigation }: Props) {
     <MysteryScreen
       scroll={false}
       backgroundSource={mysteryAssets.mapBackgroundWood}
-      contentStyle={StyleSheet.flatten([styles.screen, tablet && styles.screenTablet, tiny && styles.screenTiny])}
+      contentStyle={StyleSheet.flatten([
+        styles.screen,
+        tablet && styles.screenTablet,
+        tiny && styles.screenTiny,
+        { paddingBottom: Math.max(insets.bottom, mysterySpacing.xs) + mysterySpacing.sm },
+      ])}
     >
       <View style={styles.topBar}>
         <Pressable accessibilityRole="button" onPress={goToRoomDetail} style={styles.roundButton}>
@@ -248,7 +255,6 @@ const styles = StyleSheet.create({
     flex: 1,
     gap: 5,
     justifyContent: 'flex-start',
-    paddingBottom: mysterySpacing.sm,
     paddingHorizontal: SCREEN_PADDING,
     paddingTop: mysterySpacing.sm,
   },
@@ -257,7 +263,6 @@ const styles = StyleSheet.create({
   },
   screenTiny: {
     gap: 3,
-    paddingBottom: mysterySpacing.xs,
   },
   topBar: {
     alignItems: 'center',

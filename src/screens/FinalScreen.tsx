@@ -2,6 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useEffect } from 'react';
 import { StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { mysteryAssets } from '../assets/mysteryAssets';
 import { GoldButton, SecondaryButton } from '../components/MysteryButtons';
 import { MysteryScreen } from '../components/MysteryScreen';
@@ -13,6 +14,7 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Final'>;
 
 export function FinalScreen({ navigation }: Props) {
   const { text } = useI18n();
+  const insets = useSafeAreaInsets();
   const { height, width } = useWindowDimensions();
   const compact = height < 760;
   const tiny = height < 690;
@@ -32,7 +34,12 @@ export function FinalScreen({ navigation }: Props) {
     <MysteryScreen
       scroll={false}
       backgroundSource={mysteryAssets.mapBackgroundWood}
-      contentStyle={StyleSheet.flatten([styles.screen, compact && styles.screenCompact, tiny && styles.screenTiny])}
+      contentStyle={StyleSheet.flatten([
+        styles.screen,
+        compact && styles.screenCompact,
+        tiny && styles.screenTiny,
+        { paddingBottom: Math.max(insets.bottom, mysterySpacing.sm) + mysterySpacing.md },
+      ])}
     >
       <View style={styles.header}>
         <View style={styles.statusWrap}>
@@ -66,13 +73,11 @@ const styles = StyleSheet.create({
     flex: 1,
     gap: 6,
     justifyContent: 'space-between',
-    paddingBottom: mysterySpacing.sm,
     paddingHorizontal: mysterySpacing.md,
     paddingTop: mysterySpacing.sm,
   },
   screenCompact: {
     gap: 4,
-    paddingBottom: mysterySpacing.sm,
   },
   screenTiny: {
     gap: 6,

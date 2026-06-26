@@ -1,5 +1,6 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Alert, StyleSheet, Text, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { mysteryAssets } from '../assets/mysteryAssets';
 import { GoldButton, ToolButton } from '../components/MysteryButtons';
 import { MysteryHeader } from '../components/MysteryHeader';
@@ -25,6 +26,7 @@ const getCodeForChapter = (chapterId: string, difficulty: Difficulty = DEFAULT_D
 
 export function DevAdminScreen({ navigation }: Props) {
   const { text } = useI18n();
+  const insets = useSafeAreaInsets();
   const devText = text.screens.devAdmin;
   const {
     progress,
@@ -74,7 +76,10 @@ export function DevAdminScreen({ navigation }: Props) {
   ];
 
   return (
-    <MysteryScreen backgroundSource={mysteryAssets.mapBackgroundWood} contentStyle={styles.screen}>
+    <MysteryScreen
+      backgroundSource={mysteryAssets.mapBackgroundWood}
+      contentStyle={[styles.screen, { paddingBottom: Math.max(insets.bottom, mysterySpacing.sm) + mysterySpacing.md }]}
+    >
       <MysteryHeader onBack={() => navigation.goBack()} title={devText.title} subtitle={devText.subtitle} />
 
       <OrnateCard glow>

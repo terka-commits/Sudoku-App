@@ -3,6 +3,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useState } from 'react';
 import { Image, ImageBackground, Platform, Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { getRewardAsset, mysteryAssets } from '../assets/mysteryAssets';
 import { GoldButton } from '../components/MysteryButtons';
 import { MysteryScreen } from '../components/MysteryScreen';
@@ -24,6 +25,7 @@ export function ChapterDetailScreen({ route, navigation }: Props) {
   const chapter = getLocalizedRoom(baseChapter, text);
   const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty>(DEFAULT_DIFFICULTY);
   const { height, width } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
   const { progress } = useGameProgress();
   const status = getRoomStatus(progress, chapter.id);
   const completed = status === 'completed';
@@ -61,7 +63,12 @@ export function ChapterDetailScreen({ route, navigation }: Props) {
     <MysteryScreen
       scroll={tablet}
       backgroundSource={mysteryAssets.mapBackgroundWood}
-      contentStyle={StyleSheet.flatten([styles.screen, compact && styles.screenCompact, tablet ? styles.tabletScreen : styles.mobileScreen])}
+      contentStyle={StyleSheet.flatten([
+        styles.screen,
+        compact && styles.screenCompact,
+        tablet ? styles.tabletScreen : styles.mobileScreen,
+        { paddingBottom: Math.max(insets.bottom, mysterySpacing.sm) + mysterySpacing.md },
+      ])}
     >
       <View style={styles.topBar}>
         <Pressable accessibilityRole="button" onPress={goBackToMap} style={styles.roundButton}>
